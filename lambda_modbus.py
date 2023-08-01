@@ -331,12 +331,6 @@ async def main():
     yaml = YAML()
     config = yaml.load(pathlib.Path(args.config))
 
-    influx_client = influxdb_client.InfluxDBClient(
-            url=f"http://{config['influxdb']['host']}:{config['influxdb']['port']}",
-            token=config["influxdb"]["token"],
-            org=config["influxdb"]["org"],
-    )
-
     conn_man = await create_connection_manager(lambda_host=config["lambda"]["host"],
                                                lambda_port=config["lambda"]["port"],
                                                influxdb_host=config["influxdb"]["host"],
