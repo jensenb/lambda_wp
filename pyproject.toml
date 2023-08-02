@@ -1,0 +1,19 @@
+[project]
+name = "lambda_wp"
+description = "Utilities for reading data from a Lambda heat pump"
+version = "0.1"
+authors = [
+    { name = "Brian Jensen", email = "jensen.j.brian@gmail.com" }
+]
+
+dependencies = [
+    "aiohttp"
+    "influxdb-client",
+    "pyModbusTCP",
+    "ruamel.yaml"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit",
+]
