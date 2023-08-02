@@ -1,0 +1,135 @@
+lambda:
+  host: "my_lambda_wp_hostname"
+  port: 502
+
+influxdb:
+  host: "my_influxdb_hostname"
+  port: 8086
+  bucket: "my_influxdb_hostname"
+  org: "My InfluxDB Org Name"
+  token: "My InfluxDB API Token"
+
+measurements:
+  - measurement_group: temperature
+    register: 2
+    names:
+      - current_temp
+      - average_temp
+      - calculated_temp
+    funcs:
+      - fixed_point_to_float_10
+      - fixed_point_to_float_10
+      - fixed_point_to_float_10
+    format: ">hhh"
+    count: 3
+    interval: 60.0
+
+  - measurement_group: heat_pump
+    register: 1002
+    names:
+      - heat_pump_state
+      - operating_mode
+      - flow_line_temp
+      - return_line_temp
+      - vol_flow_heat_sink
+      - energy_source_inlet_temp
+      - energy_source_outlet_temp
+      - volume_flow_energy_source
+      - compressor_rating
+      - heating_capacity
+      - inverter_power_consumption
+      - cop
+      - None
+      - request_type
+      - request_flow_line_temp
+      - request_return_line_temp
+      - request_heat_sink_diff
+      - None
+      - statistic_energy_consumption
+      - statisct_energy_output
+    count: 22
+    interval: 2.0
+    format: ">HHhhhhhhHhhhHhhhhhii"
+    funcs:
+     - heat_pump_state_to_str
+     - heat_pump_mode_to_str
+     - fixed_point_to_float_100
+     - fixed_point_to_float_100
+     - fixed_point_to_float_100
+     - fixed_point_to_float_100
+     - fixed_point_to_float_100
+     - fixed_point_to_float_100
+     - fixed_point_to_float_100
+     - fixed_point_to_float_10
+     - as_int
+     - fixed_point_to_float_100
+     - as_is
+     - heat_pump_request_type_to_str
+     - fixed_point_to_float_10
+     - fixed_point_to_float_10
+     - fixed_point_to_float_10
+     - as_is
+     - as_int
+     - as_int
+
+  - measurement_group: boiler
+    register: 2001
+    names:
+      - boiler_mode
+      - high_temp
+      - low_temp
+    count: 3
+    interval: 5.0
+    format: ">Hhh"
+    funcs:
+     - boiler_mode_to_str
+     - fixed_point_to_float_10
+     - fixed_point_to_float_10
+
+  - measurement_group: buffer
+    register: 3001
+    names:
+      - buffer_mode
+      - high_temp
+      - low_temp
+    interval: 5.0
+    count: 3
+    format: ">Hhh"
+    funcs:
+     - buffer_mode_to_str
+     - fixed_point_to_float_10
+     - fixed_point_to_float_10
+
+  - measurement_group: solar
+    register: 4001
+    names:
+      - solar_mode
+      - collector_temp
+      - buffer_1_temp
+      - buffer_2_temp
+    count: 4
+    format: ">Hhhh"
+    interval: 5.0
+    funcs:
+     - solar_mode_to_str
+     - fixed_point_to_float_10
+     - fixed_point_to_float_10
+     - fixed_point_to_float_10
+
+  - measurement_group: heating_circuit
+    register: 5001
+    names:
+      - heating_circuit_state
+      - flow_line_temp
+      - return_line_temp
+      - room_temp
+      - Setpoint_flow_line_temp
+    interval: 5.0
+    count: 5
+    format: ">Hhhhh"
+    funcs:
+     - heating_circuit_state_to_str
+     - fixed_point_to_float_10
+     - fixed_point_to_float_10
+     - fixed_point_to_float_10
+     - fixed_point_to_float_10
