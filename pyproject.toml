@@ -7,7 +7,7 @@ authors = [
 ]
 
 dependencies = [
-    "aiohttp"
+    "aiohttp",
     "influxdb-client",
     "pyModbusTCP",
     "ruamel.yaml"
