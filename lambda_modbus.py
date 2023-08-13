@@ -257,10 +257,25 @@ class ConnectionManager:
                 val = funcs[i](vals[i])
                 t_now = time()
 
-                # state info we write as tags on every measurement
+                # state info we write as tags on every measurement for selecting orther measurements
+                # based upon the state value
                 if tags[i]:
                     p = p.tag(names[i], val)
                     logging.debug(f"Writing tag {names[i]}")
+
+                    # additionally we write the state also as field for easier visualization
+                    p_state = Point(measurement_group)
+                    if (
+                        cache_values
+                        and (val != cached_vals[i][0] or t_now - cached_vals[i][1] >= cache_timeout)
+                        or not cache_values
+                    ):
+
+                        logging.info(f"Writing field {names[i]}: {val}")
+                        p_state = p_state.field(names[i], val)
+                        cached_vals[i][0] = val
+                        cached_vals[i][1] = t_now
+                        await self.write_record(p_state)
 
                 # caching only for field measurements
                 elif cache_values:
