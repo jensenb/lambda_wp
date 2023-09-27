@@ -10,7 +10,7 @@ from typing import Dict, List, NoReturn
 import influxdb_client
 from influxdb_client.client.influxdb_client_async import InfluxDBClientAsync
 from influxdb_client.client.write_api import SYNCHRONOUS, Point
-from pyModbusTCP.client import ModbusClient
+from pymodbus.client import ModbusTcpClient
 from ruamel.yaml import YAML
 
 HEAT_PUMP_MODE = {
@@ -174,6 +174,10 @@ def as_is(x):
     return x
 
 
+class LambdaModbuxException(Exception):
+    pass
+
+
 class ConnectionManager:
     def __init__(
         self,
@@ -196,7 +200,7 @@ class ConnectionManager:
         self.influxdb_org = influxdb_org
 
     async def _init(self):
-        self.lambda_client = ModbusClient(host=self.lambda_host, port=self.lambda_port)
+        self.lambda_client = ModbusTcpClient(host=self.lambda_host, port=self.lambda_port)
 
         self.influxdb_client = InfluxDBClientAsync(
             url=f"http://{self.influxdb_host}:{self.influxdb_port}", token=self.influxdb_token, org=self.influxdb_org
@@ -216,9 +220,13 @@ class ConnectionManager:
     def read_lambda_values(self, register, count):
         logging.debug(f"Reading register {register} from {self.lambda_host}:{self.lambda_port}")
         res = self.lambda_client.read_holding_registers(register, count)
-        logging.debug(f"Retrieved {len(res)} values")
+        if res.isError():
+            logging.error(f"Error reading register {register} count {count} from Lambda via Modbus.")
+            raise LambdaModbuxException(f"Error reading register {register} count {count} from Lambda via Modbus.")
 
-        return res
+        logging.debug(f"Retrieved {len(res.registers)} values")
+
+        return res.registers
 
     async def read_lambda_vals(
         self,
