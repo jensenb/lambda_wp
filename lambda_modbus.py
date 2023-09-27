@@ -125,6 +125,14 @@ HEAT_PUMP_REQUEST_TYPE = {
     4: "DOMESTIC HOT WATER",
 }
 
+ENERGY_MANAGER_STATE = {
+    0: "OFF",
+    1: "AUTOMATIK",
+    2: "MANUAL",
+    3: "ERROR",
+    4: "OFFLINE",
+}
+
 
 def fixed_point_to_float_10(x):
     return float(x) / 10
@@ -168,6 +176,10 @@ def heating_circuit_mode_to_str(x):
 
 def heat_pump_request_type_to_str(x):
     return HEAT_PUMP_REQUEST_TYPE[x]
+
+
+def energy_manager_operating_state_to_str(x):
+    return ENERGY_MANAGER_STATE[x]
 
 
 def as_is(x):
